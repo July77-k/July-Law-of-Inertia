@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>牛顿第一定律 - 物理知识点解析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .section {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+        }
+        p {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        .key-point {
+            background-color: #e8f4fd;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+        }
+        .example-list {
+            list-style: none;
+            margin: 10px 0 10px 20px;
+        }
+        .example-list li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 20px;
+        }
+        .example-list li::before {
+            content: "•";
+            color: #3498db;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* 动画演示区样式 */
+        .animation-wrap {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            gap: 20px;
+        }
+        .animation-box {
+            width: 45%;
+            min-width: 300px;
+            height: 200px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        /* 动画控制按钮 */
+        .animation-control {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        .control-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            background: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .control-btn:hover {
+            background: #2980b9;
+        }
+        /* 小车滑行动画 */
+        .car-wrap {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            height: 50px;
+        }
+        .road {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 10px;
+            background: #666;
+        }
+        .car {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 60px;
+            height: 40px;
+            background: #e74c3c;
+            border-radius: 8px 15px 5px 5px;
+            animation: carMove 8s linear infinite;
+        }
+        .car::before {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 10px;
+            width: 10px;
+            height: 10px;
+            background: #333;
+            border-radius: 50%;
+        }
+        .car::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            right: 10px;
+            width: 10px;
+            height: 10px;
+            background: #333;
+            border-radius: 50%;
+        }
+        @keyframes carMove {
+            0% { left: 0; }
+            100% { left: calc(100% - 60px); }
+        }
+        /* 小球斜面运动动画 */
+        .ramp-wrap {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        .ramp1 {
+            position: absolute;
+            bottom: 20px;
+            left: 50px;
+            width: 150px;
+            height: 10px;
+            background: #95a5a6;
+            transform: rotate(-30deg);
+            transform-origin: left bottom;
+        }
+        .ramp2 {
+            position: absolute;
+            bottom: 20px;
+            left: 200px;
+            width: 200px;
+            height: 10px;
+            background: #95a5a6;
+        }
+        .ball {
+            position: absolute;
+            top: 120px;
+            left: 60px;
+            width: 20px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 50%;
+            animation: ballMove 8s linear infinite;
+        }
+        @keyframes ballMove {
+            0% { top: 120px; left: 60px; }
+            25% { top: 70px; left: 180px; }
+            50% { top: 170px; left: 200px; }
+            100% { top: 170px; left: calc(100% - 40px); }
+        }
+        /* 动画暂停类 */
+        .animation-paused .car,
+        .animation-paused .ball {
+            animation-play-state: paused;
+        }
+        .animation-desc {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* 答题模块样式 */
+        .quiz-wrap {
+            margin-top: 20px;
+        }
+        .quiz-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .quiz-options {
+            margin-left: 20px;
+        }
+        .quiz-options label {
+            display: block;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        /* 错题标记 */
+        .wrong-option {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .correct-option {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        #submit-quiz {
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        #submit-quiz:hover {
+            background: #2980b9;
+        }
+        #quiz-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            display: none;
+        }
+        .correct {
+            background: #d4edda;
+            color: #155724;
+        }
+        .wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* 解析弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+            position: relative;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+        .close-modal:hover {
+            color: #333;
+        }
+        .modal-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+        .explanation {
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        .explanation h4 {
+            color: #3498db;
+            margin: 10px 0;
+        }
+        #view-explanation {
+            margin-top: 10px;
+            padding: 8px 15px;
+            background: #f39c12;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #view-explanation:hover {
+            background: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>牛顿第一定律（惯性定律）</h1>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2>定律定义</h2>
+            <p>牛顿第一定律，又称为惯性定律，其核心内容为：<strong>一切物体在没有受到力的作用时，总保持静止状态或匀速直线运动状态</strong>。</p>
+            <div class="key-point">
+                <p><strong>核心解读</strong>：物体的运动不需要力来维持，力是改变物体运动状态的原因。物体具有保持原来运动状态不变的性质，这种性质叫做惯性，惯性是物体的固有属性，只与物体的质量有关。</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>动态演示</h2>
+            <div class="animation-wrap">
+                <!-- 小车滑行动画 -->
+                <div class="animation-box" id="car-animation">
+                    <div class="animation-control">
+                        <button class="control-btn pause-btn">暂停</button>
+                        <button class="control-btn play-btn">播放</button>
+                    </div>
+                    <div class="car-wrap">
+                        <div class="road"></div>
+                        <div class="car"></div>
+                    </div>
+                </div>
+                <div class="animation-desc">小车匀速滑行（无外力作用时保持匀速直线运动）</div>
+
+                <!-- 小球斜面运动动画 -->
+                <div class="animation-box" id="ball-animation">
+                    <div class="animation-control">
+                        <button class="control-btn pause-btn">暂停</button>
+                        <button class="control-btn play-btn">播放</button>
+                    </div>
+                    <div class="ramp-wrap">
+                        <div class="ramp1"></div>
+                        <div class="ramp2"></div>
+                        <div class="ball"></div>
+                    </div>
+                </div>
+                <div class="animation-desc">小球斜面实验（忽略摩擦力时匀速运动）</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>推导与背景</h2>
+            <p>牛顿第一定律并非直接通过实验得出，而是牛顿在伽利略、笛卡尔等科学家的研究基础上，通过理想化实验（斜面实验）和逻辑推理总结而来。</p>
+            <p>伽利略的斜面实验：让小球从一个斜面滚下，再滚上另一个斜面，若忽略摩擦力，小球会上升到原来的高度；减小第二个斜面的倾角，小球运动的距离更远；若第二个斜面水平，小球将永远匀速运动下去。</p>
+        </section>
+
+        <section class="section">
+            <h2>生活中的实例</h2>
+            <ul class="example-list">
+                <li>汽车刹车时，乘客会向前倾倒（乘客具有保持原来运动状态的惯性）；</li>
+                <li>拍打衣服可以抖落灰尘（灰尘因惯性保持静止，与衣服分离）；</li>
+                <li>跳远运动员起跳前助跑（利用惯性获得更大的初速度，跳得更远）；</li>
+                <li>锤头松了，将锤柄撞击硬物，锤头会紧套在锤柄上（锤柄停止运动，锤头因惯性继续向下运动）。</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>惯性小测试</h2>
+            <div class="quiz-wrap">
+                <div class="quiz-item" data-qid="q1">
+                    <div class="quiz-question">1. 关于惯性，下列说法正确的是（）</div>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q1" value="a"> a. 速度越大的物体，惯性越大</label>
+                        <label><input type="radio" name="q1" value="b"> b. 质量越大的物体，惯性越大</label>
+                        <label><input type="radio" name="q1" value="c"> c. 静止的物体没有惯性</label>
+                        <label><input type="radio" name="q1" value="d"> d. 受力的物体没有惯性</label>
+                    </div>
+                </div>
+
+                <div class="quiz-item" data-qid="q2">
+                    <div class="quiz-question">2. 汽车突然启动时，乘客会向后倾倒，这是因为（）</div>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q2" value="a"> a. 乘客受到向后的力</label>
+                        <label><input type="radio" name="q2" value="b"> b. 乘客具有惯性，保持原来的静止状态</label>
+                        <label><input type="radio" name="q2" value="c"> c. 汽车对乘客的推力</label>
+                        <label><input type="radio" name="q2" value="d"> d. 重力的作用</label>
+                    </div>
+                </div>
+
+                <div class="quiz-item" data-qid="q3">
+                    <div class="quiz-question">3. 牛顿第一定律的核心是（）</div>
+                    <div class="quiz-options">
+                        <label><input type="radio" name="q3" value="a"> a. 力是维持物体运动的原因</label>
+                        <label><input type="radio" name="q3" value="b"> b. 力是改变物体运动状态的原因</label>
+                        <label><input type="radio" name="q3" value="c"> c. 物体受力才会运动</label>
+                        <label><input type="radio" name="q3" value="d"> d. 物体不受力就会静止</label>
+                    </div>
+                </div>
+
+                <button id="submit-quiz">提交答案</button>
+                <div id="quiz-result"></div>
+                <button id="view-explanation" style="display: none;">查看错题解析</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- 解析弹窗 -->
+    <div class="modal" id="explanation-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 class="modal-title">错题解析</h3>
+            <div id="explanation-content" class="explanation">
+                <!-- 解析内容将通过JS动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>物理知识点解析 - 牛顿第一定律 | 版权所有 © 2025</p>
+    </footer>
+
+    <script>
+        // 1. 动画暂停/播放控制
+        const pauseBtns = document.querySelectorAll('.pause-btn');
+        const playBtns = document.querySelectorAll('.play-btn');
+        const animationBoxes = document.querySelectorAll('.animation-box');
+
+        pauseBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                animationBoxes[index].classList.add('animation-paused');
+            });
+        });
+
+        playBtns.forEach((btn, index) => {
+            btn.addEventListener('click', () => {
+                animationBoxes[index].classList.remove('animation-paused');
+            });
+        });
+
+        // 2. 答题模块逻辑（含错题标记和解析）
+        const submitBtn = document.getElementById('submit-quiz');
+        const resultBox = document.getElementById('quiz-result');
+        const viewExplanationBtn = document.getElementById('view-explanation');
+        const modal = document.getElementById('explanation-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const explanationContent = document.getElementById('explanation-content');
+
+        // 正确答案及解析
+        const quizData = {
+            q1: {
+                correct: 'b',
+                explanation: `
+                    <h4>本题考点：惯性的本质</h4>
+                    <p>惯性是物体的固有属性，<strong>只与物体的质量有关</strong>，与速度、运动状态、是否受力无关。</p>
+                    <p>选项分析：</p>
+                    <ul>
+                        <li>a错误：速度大小不影响惯性，例如高速行驶的小汽车和静止的大货车，大货车质量更大，惯性更大；</li>
+                        <li>b正确：质量是惯性的唯一量度，质量越大，物体保持原有运动状态的能力越强；</li>
+                        <li>c错误：静止的物体同样有惯性，例如静止的石头很难推动，就是因为惯性；</li>
+                        <li>d错误：受力的物体依然有惯性，例如正在加速的汽车，依然具有保持原来速度的惯性。</li>
+                    </ul>
+                `
+            },
+            q2: {
+                correct: 'b',
+                explanation: `
+                    <h4>本题考点：惯性的生活应用</h4>
+                    <p>汽车突然启动时，乘客的脚随汽车一起向前运动，但上半身由于惯性，要保持原来的静止状态，因此会向后倾倒（惯性的"保持"特性）。</p>
+                    <p>选项分析：</p>
+                    <ul>
+                        <li>a错误：没有"向后的力"作用于乘客，倾倒现象是惯性导致，而非受力；</li>
+                        <li>b正确：符合惯性的本质，物体保持原有运动状态的性质；</li>
+                        <li>c错误：汽车对乘客的推力是向前的，不会导致向后倾倒；</li>
+                        <li>d错误：重力竖直向下，与向后倾倒的水平方向运动无关。</li>
+                    </ul>
+                `
+            },
+            q3: {
+                correct: 'b',
+                explanation: `
+                    <h4>本题考点：牛顿第一定律的核心</h4>
+                    <p>牛顿第一定律推翻了"力是维持物体运动的原因"的传统观点，明确核心：<strong>力是改变物体运动状态的原因</strong>，物体不受力时会保持静止或匀速直线运动。</p>
+                    <p>选项分析：</p>
+                    <ul>
+                        <li>a错误：这是亚里士多德的错误观点，牛顿第一定律已推翻；</li>
+                        <li>b正确：力的作用是改变运动状态（速度大小或方向），而非维持运动；</li>
+                        <li>c错误：物体不受力也可能保持匀速直线运动（如太空中的天体）；</li>
+                        <li>d错误：物体不受力时，可能保持静止，也可能保持匀速直线运动，取决于初始状态。</li>
+                    </ul>
+                `
+            }
+        };
+
+        // 提交答案逻辑
+        submitBtn.addEventListener('click', function() {
+            let score = 0;
+            let wrongQuestions = [];
+            const total = Object.keys(quizData).length;
+
+            // 重置之前的错题标记
+            document.querySelectorAll('.quiz-options label').forEach(label => {
+                label.classList.remove('wrong-option', 'correct-option');
+            });
+
+            // 校验每道题答案
+            for (let [qid, data] of Object.entries(quizData)) {
+                const selected = document.querySelector(`input[name="${qid}"]:checked`);
+                const options = document.querySelectorAll(`input[name="${qid}"]`);
+
+                // 标记正确选项
+                options.forEach(opt => {
+                    if (opt.value === data.correct) {
+                        opt.parentElement.classList.add('correct-option');
+                    }
+                });
+
+                // 校验选中答案
+                if (selected) {
+                    if (selected.value === data.correct) {
+                        score++;
+                    } else {
+                        // 标记错误选项
+                        selected.parentElement.classList.add('wrong-option');
+                        wrongQuestions.push(qid);
+                    }
+                } else {
+                    // 未选择视为错误
+                    wrongQuestions.push(qid);
+                }
+            }
+
+            // 显示结果
+            resultBox.style.display = 'block';
+            if (score === total) {
+                resultBox.className = 'correct';
+                resultBox.textContent = `恭喜！全部答对（得分：${score}/${total}），你掌握了牛顿第一定律的核心知识点！`;
+                viewExplanationBtn.style.display = 'none';
+            } else {
+                resultBox.className = 'wrong';
+                resultBox.textContent = `得分：${score}/${total}，部分题目未掌握，建议查看解析加深理解～`;
+                viewExplanationBtn.style.display = 'inline-block';
+                // 存储错题ID，用于解析弹窗
+                viewExplanationBtn.dataset.wrongIds = wrongQuestions.join(',');
+            }
+        });
+
+        // 查看解析弹窗逻辑
+        viewExplanationBtn.addEventListener('click', function() {
+            const wrongIds = this.dataset.wrongIds.split(',');
+            let content = '';
+
+            // 生成错题解析内容
+            wrongIds.forEach(qid => {
+                const questionEl = document.querySelector(`.quiz-item[data-qid="${qid}"] .quiz-question`);
+                content += `
+                    <div style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed #eee;">
+                        <p><strong>题目：${questionEl.textContent}</strong></p>
+                        ${quizData[qid].explanation}
+                    </div>
+                `;
+            });
+
+            explanationContent.innerHTML = content;
+            modal.style.display = 'flex';
+        });
+
+        // 关闭弹窗
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // 点击弹窗外部关闭
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
